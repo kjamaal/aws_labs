@@ -1,0 +1,4 @@
+---
+lab_region: us-east-1
+lab_vpc_cidr: 10.0.0.0/16
+lab_vpc_name: lab

@@ -1,0 +1,31 @@
+---
+- name: debug start base infra
+  debug:
+    msg: "start debugging base infra task"
+  tags:
+    - never
+    - debug
+
+- name: Lab
+  cloudformation:
+    stack_name: "lab-vpc-infrastructure"
+    state: present
+    create_changeset: yes
+    region: "{{lab_region}}"
+    template_body: "{{ lookup('template', 'cf.j2') }}"
+    template_parameters:
+      VPCCidr: "{{ lab_vpc_cidr }}"
+      Region: "{{ lab_region }}"
+      VPCName: "{{ lab_vpc_name }}"
+    tags:
+      kp:src: "Ansible"
+  tags:
+    - base
+    - lab
+
+- name: debug stop base infra
+  debug:
+    msg: "stop debugging base infra task"
+  tags:
+    - never
+    - debug

@@ -1,0 +1,205 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'Infrastructure by Kirkpatrick'
+Metadata:
+  Created:
+    at: '2019-01-09'
+    by: Jamaal Kirkpatrick
+Mappings:
+  Regions:
+    us-east-1:
+      az1: us-east-1a
+      az1CidrPrivateApp: "10.0.1.0/24"
+      az1CidrPrivateData: "10.0.3.0/24"
+      az1CidrPublicWeb: "10.0.2.0/24"
+      az2: us-east-1b
+      az2CidrPrivateApp: "10.0.5.0/24"
+      az2CidrPrivateData: "10.0.7.0/24"
+      az2CidrPublicWeb: "10.0.4.0/24"
+      az3: us-east-1c
+      az3CidrPrivateApp: "10.0.9.0/24"
+      az3CidrPrivateData: "10.0.11.0/24"
+      az3CidrPublicWeb: "10.0.6.0/24"
+    us-west-1:
+      az1: us-west-1a
+      az1CidrPrivate: "10.0.13.0/24"
+      az1CidrPrivate: "10.0.15.0/24"
+      az1CidrPublic: "10.0.8.0/24"
+      az2: us-west-1b
+      az2CidrPrivate: "10.0.17.0/24"
+      az2CidrPrivate: "10.0.19.0/24"
+      az2CidrPublic: "10.0.10.0/24"
+      az3: us-west-1c
+      az3CidrPrivate: "10.0.21.0/24"
+      az3CidrPrivate: "10.0.23.0/24"
+      az3CidrPublic: "10.0.12.0/24"
+Parameters:
+  VPCCidr:
+    Type: String
+  Region:
+    Type: String
+  VPCName:
+    Type: String
+    Default: lab
+Resources:
+  VPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: !Ref VPCCidr
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}'
+  WebSubnetAZ1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !FindInMap [ Regions, !Ref Region, az1 ]
+      CidrBlock: !FindInMap [ Regions, !Ref Region, az1CidrPublicWeb ]
+      MapPublicIpOnLaunch: false
+      VpcId: !Ref VPC
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_public_web_a'
+  WebSubnetAZ2:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !FindInMap [ Regions, !Ref Region, az2 ]
+      CidrBlock: !FindInMap [ Regions, !Ref Region, az2CidrPublicWeb ]
+      MapPublicIpOnLaunch: false
+      VpcId: !Ref VPC
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_public_web_b'
+  WebSubnetAZ3:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !FindInMap [ Regions, !Ref Region, az3 ]
+      CidrBlock: !FindInMap [ Regions, !Ref Region, az3CidrPublicWeb ]
+      MapPublicIpOnLaunch: false
+      VpcId: !Ref VPC
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_public_web_c'                     
+  AppSubnetAZ1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !FindInMap [ Regions, !Ref Region, az1 ]
+      CidrBlock: !FindInMap [ Regions, !Ref Region, az1CidrPrivateApp ]
+      MapPublicIpOnLaunch: false
+      VpcId: !Ref VPC
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_private_app_a'
+  AppSubnetAZ2:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !FindInMap [ Regions, !Ref Region, az2 ]
+      CidrBlock: !FindInMap [ Regions, !Ref Region, az2CidrPrivateApp ]
+      MapPublicIpOnLaunch: false
+      VpcId: !Ref VPC
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_private_app_b'
+  AppSubnetAZ3:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !FindInMap [ Regions, !Ref Region, az3 ]
+      CidrBlock: !FindInMap [ Regions, !Ref Region, az3CidrPrivateApp ]
+      MapPublicIpOnLaunch: false
+      VpcId: !Ref VPC
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_private_app_c'  
+  DataSubnetAZ1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !FindInMap [ Regions, !Ref Region, az1 ]
+      CidrBlock: !FindInMap [ Regions, !Ref Region, az1CidrPrivateData ]
+      MapPublicIpOnLaunch: false
+      VpcId: !Ref VPC
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_private_data_a'
+  DataSubnetAZ2:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !FindInMap [ Regions, !Ref Region, az2 ]
+      CidrBlock: !FindInMap [ Regions, !Ref Region, az2CidrPrivateData ]
+      MapPublicIpOnLaunch: false
+      VpcId: !Ref VPC
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_private_data_b'
+  DataSubnetAZ3:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !FindInMap [ Regions, !Ref Region, az3 ]
+      CidrBlock: !FindInMap [ Regions, !Ref Region, az3CidrPrivateData ]
+      MapPublicIpOnLaunch: false
+      VpcId: !Ref VPC
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_private_data_c'
+  RouteTableWeb:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_rt_public_web'
+      VpcId: !Ref VPC
+  RouteTableApp:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_rt_private_app'
+      VpcId: !Ref VPC
+  RouteTableData:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_rt_private_data'
+      VpcId: !Ref VPC    
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: 'Name'
+          Value: !Sub '${VPCName}_IntGateway'
+  InetGatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+  EIPNatA:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: VPC
+    DependsOn: VPC
+  EIPNatB:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: VPC
+    DependsOn: VPC
+  EIPNatC:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: VPC
+    DependsOn: VPC
+  NatGatewayA:
+    Type: 'AWS::EC2::NatGateway'
+    Properties:
+      AllocationId: !GetAtt EIPNatA.AllocationId
+      SubnetId: !Ref WebSubnetAZ1
+  NatGatewayB:
+    Type: 'AWS::EC2::NatGateway'
+    Properties:
+      AllocationId: !GetAtt EIPNatB.AllocationId
+      SubnetId: !Ref WebSubnetAZ2
+  NatGatewayC:
+    Type: 'AWS::EC2::NatGateway'
+    Properties:
+      AllocationId: !GetAtt EIPNatC.AllocationId
+      SubnetId: !Ref WebSubnetAZ3

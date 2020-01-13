@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+
+    - name: debugging
+      debug:
+        msg: "debug start"
+      tags:
+        - never
+        - debug
+    
+    - import_role:
+        name: base_infra
+        tasks_from: base
+      tags:
+        - base
+        - lab
+
+    - name: debugging
+      debug:
+        msg: "debug end"
+      tags:
+        - never
+        - debug
